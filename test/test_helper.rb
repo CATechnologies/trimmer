@@ -1,7 +1,7 @@
 require 'i18n'
 require 'test/spec'
 require 'rack/mock'
-require File.dirname(__FILE__) + '/../lib/trimmer'
+require_relative '../lib/trimmer'
 
 class Test::Unit::TestCase
 

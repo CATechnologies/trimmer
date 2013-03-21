@@ -43,12 +43,12 @@ module Trimmer
   protected
 
     def templates(locale, ext)
-      [200, {'Content-Type' => 'text/javascript'}, templates_to_js(locale)]
+      [200, {'Content-Type' => 'text/javascript'}, [templates_to_js(locale)]]
     end
 
 
     def translations(locale, ext)
-      [200, {'Content-Type' => 'text/javascript'}, translations_to_js(:locale => locale, :only => allowed_keys)]
+      [200, {'Content-Type' => 'text/javascript'}, [translations_to_js(:locale => locale, :only => allowed_keys)]]
     end 
 
     # Exports templates and translations in a single request
