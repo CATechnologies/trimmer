@@ -9,4 +9,9 @@
 
   * Ruby 1.9 and 1.8 compatibility
 
+* Version 0.0.4
+  #####Changed
+
+  * Fix /trimmer/en/{translations/templates}.js routes
+
 
