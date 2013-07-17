@@ -1,3 +1,5 @@
 en:
   foo:
     trimmer: "trimmer"
+  bif:
+    key: "value"

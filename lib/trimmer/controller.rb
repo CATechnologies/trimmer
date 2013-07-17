@@ -26,13 +26,13 @@ module Trimmer
       case request.path
       when /\/trimmer(\/([^\/]+))*\/translations\.([js]+)$/
         validate_locale($2) if $2 || ($2 && $2.empty?)
-        response = translations($2, $3)
+        response = translations($2, $3, request.params)
       when /\/trimmer\/([^\/]+)\/templates\.([js]+)$/
         validate_locale($1)
         response = templates($1, $2)
       when /\/trimmer\/([^\.|\/]+)\.([js]+)$/
         validate_locale($1)
-        response = resources($1, $2)
+        response = resources($1, $2, request.params)
       else
         response = @app.call(env)
       end
@@ -42,18 +42,40 @@ module Trimmer
 
   protected
 
+    ##
+    # Allow passing 'allowed_keys' parameter to filter returned keys.
+    #
+    # Note: Will only ever return keys that have already been allowed in the initializer.
+    #
+    # @param [Hash] Request parameters
+    #
+    # @return [Array] List of allowed keys (either those configured or filtered list)
+    def filter_by_param(params={})
+      keys_allowed = []
+      if (sub_keys = params["allowed_keys"])
+        sub_keys.split(',').each do |key|
+          if self.allowed_keys.any? {|allowed_key| key.start_with?(allowed_key)}
+            keys_allowed << key
+          end
+        end
+      else
+        keys_allowed = self.allowed_keys
+      end
+      keys_allowed
+    end
+
     def templates(locale, ext)
       [200, {'Content-Type' => 'text/javascript'}, [templates_to_js(locale)]]
     end
 
 
-    def translations(locale, ext)
-      [200, {'Content-Type' => 'text/javascript'}, [translations_to_js(:locale => locale, :only => allowed_keys)]]
+    def translations(locale, ext, params={})
+      [200, {'Content-Type' => 'text/javascript'}, [translations_to_js(:locale => locale, :only => filter_by_param(params))]]
     end 
 
     # Exports templates and translations in a single request
-    def resources(locale, ext)
-      opts = {:only => allowed_keys}
+    def resources(locale, ext, params={})
+      opts = {:only => filter_by_param(params)}
       opts[:locale] = locale if locale && !locale.empty?
 
       response = translations_to_js(opts)
