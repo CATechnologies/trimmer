@@ -12,6 +12,11 @@
 * Version 0.0.4
   #####Changed
 
-  * Fix /trimmer/en/{translations/templates}.js routes
+  * Order templates
+  * Fix tests
 
+* Version 0.0.5
+  #####Changed
+
+  * Fix /trimmer/en/{translations/templates}.js routes
 
