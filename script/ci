@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+# set ft=ruby
+
+class Ci
+
+  SPECS = [
+    {:name => 'Lib',                :cmd  => 'bundle exec ruby test/spec_trimmer_controller.rb'},
+  ]
+
+  def self.run!
+    failed_specs = []
+    specs_to_run = SPECS
+    specs_to_run.each do |spec|
+      puts "travis_fold:start:#{spec[:name].gsub(" ", "_")}\r"
+      print_announcement "Running: #{spec[:name]}"
+      failed_specs << spec if !run_spec(spec)
+      puts "travis_fold:end:#{spec[:name].gsub(" ", "_")}\r"
+    end
+    specs_output(failed_specs)
+  end
+
+  private
+
+  def self.run_spec(spec)
+    if system(spec[:cmd])
+      print_success("Spec: '#{spec[:name]}' - PASS")
+      return true
+    else
+      print_failure("Spec: '#{spec[:name]}' - FAIL")
+      return false
+    end
+  end
+
+  def self.specs_output(failed_specs)
+    if failed_specs.empty?
+      print_success("PASS")
+      exit 0
+    else
+      print_failure("FAIL!!!")
+      puts
+      print_failure("Failed specs:")
+      failed_specs.each do |spec|
+        print_failure("- '#{spec[:name]}'")
+      end
+      exit 1
+    end
+  end
+
+  def self.print_announcement(heading)
+    puts "\n\e[1;33m[Travis CI] #{heading}\e[m\n"
+  end
+
+  def self.print_failure(message)
+    puts "\n\e[1;31m[Travis CI] #{message}\e[m\n"
+  end
+
+  def self.print_success(message)
+    puts "\n\e[1;32m[Travis CI] #{message}\e[m\n"
+  end
+
+end
+
+Ci.run!

@@ -13,7 +13,7 @@ git:
 env:
   global:
   matrix:
-    - CMD='bundle exec ruby test/spec_trimmer_controller.rb'
+    - CMD='script/ci'
 
 notifications:
   email: false
