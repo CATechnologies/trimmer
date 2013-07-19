@@ -51,17 +51,13 @@ module Trimmer
     #
     # @return [Array] List of allowed keys (either those configured or filtered list)
     def filter_by_param(params={})
-      keys_allowed = []
       if (sub_keys = params["allowed_keys"])
-        sub_keys.split(',').each do |key|
-          if self.allowed_keys.any? {|allowed_key| key.start_with?(allowed_key)}
-            keys_allowed << key
-          end
+        sub_keys.split(',').select do |key|
+          self.allowed_keys.any? {|allowed_key| key.start_with?(allowed_key)}
         end
       else
-        keys_allowed = self.allowed_keys
+        self.allowed_keys
       end
-      keys_allowed
     end
 
     def templates(locale, ext)
