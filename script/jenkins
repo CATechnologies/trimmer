@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+bundle install --deployment
+
+echo "Running specs..."
+bundle exec ruby test/spec_trimmer_controller.rb
