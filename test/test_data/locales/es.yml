@@ -1,3 +1,5 @@
 es:
   foo:
     trimmer: "recortadora"
+  bif:
+    key: "valor"

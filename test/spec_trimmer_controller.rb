@@ -14,11 +14,16 @@ context Trimmer::Controller do
 
     @def_resources_en = <<-VALUE.strip
 if(typeof(I18n) == 'undefined') { I18n = {}; };
-I18n.translations = ({\"foo\":{\"trimmer\":\"trimmer\"}});
+I18n.translations = ({\"foo\":{\"trimmer\":\"trimmer\"},\"bif\":{\"key\":\"value\"}});
 Templates = ({"foo":{"bar":"<span>trimmer</span>\\n"}});
 VALUE
 
     @def_translations_en = <<-VALUE.strip
+if(typeof(I18n) == 'undefined') { I18n = {}; };
+I18n.translations = ({\"foo\":{\"trimmer\":\"trimmer\"},\"bif\":{\"key\":\"value\"}});
+VALUE
+
+    @def_translations_en_filtered = <<-VALUE.strip
 if(typeof(I18n) == 'undefined') { I18n = {}; };
 I18n.translations = ({\"foo\":{\"trimmer\":\"trimmer\"}});
 VALUE
@@ -33,13 +38,13 @@ VALUE
 
     @def_resources_es = <<-VALUE.strip
 if(typeof(I18n) == 'undefined') { I18n = {}; };
-I18n.translations = ({\"foo\":{\"trimmer\":\"recortadora\"}});
+I18n.translations = ({\"foo\":{\"trimmer\":\"recortadora\"},\"bif\":{\"key\":\"valor\"}});
 Templates = ({"foo":{"bar":"<span>recortadora</span>\\n"}});
 VALUE
 
     @def_translations_es = <<-VALUE.strip
 if(typeof(I18n) == 'undefined') { I18n = {}; };
-I18n.translations = ({\"foo\":{\"trimmer\":\"recortadora\"}});
+I18n.translations = ({\"foo\":{\"trimmer\":\"recortadora\"},\"bif\":{\"key\":\"valor\"}});
 VALUE
 
     @def_templates_es = <<-VALUE.strip
@@ -48,7 +53,7 @@ VALUE
 
     @def_resources_ca = <<-VALUE.strip
 if(typeof(I18n) == 'undefined') { I18n = {}; };
-I18n.translations = ({\"foo\":{\"trimmer\":\"trimmer\"}});
+I18n.translations = ({\"foo\":{\"trimmer\":\"trimmer\"},\"bif\":{\"key\":\"value\"}});
 Templates = ({"foo":{"bar":"<span>recortadora</span>\\n"}});
 VALUE
 
@@ -139,12 +144,17 @@ VALUE
 
   specify "should filter translations if allowed_keys option set on Trimmer::Controller instance" do
     request(:path=>'/trimmer/en/translations.js', :allowed_keys => "*.baz").body.should.equal("if(typeof(I18n) == 'undefined') { I18n = {}; };\nI18n.translations = ({});")
-    request(:path=>'/trimmer/en/translations.js', :allowed_keys => "*.foo").body.should.equal(@def_translations_en)
+    request(:path=>'/trimmer/en/translations.js', :allowed_keys => "*.foo").body.should.equal(@def_translations_en_filtered)
+    request(:path=>'/trimmer/en/translations.js', :allowed_keys => ["*.foo", "*.bif"]).body.should.equal(@def_translations_en)
+  end
+
+  specify "should further filter translations if allowed_keys is passed as a parameter" do
+    request(:path=>'/trimmer/en/translations.js?allowed_keys=*.foo', :allowed_keys => ["*.bif", "*.foo"]).body.should.equal(@def_translations_en_filtered)
   end
 
   specify "should render all translations if no locale" do
     request(:path=>'/trimmer/translations.js').body.should.equal(<<-RESP.strip)
-if(typeof(I18n) == 'undefined') { I18n = {}; };\nI18n.translations = ({\"foo\":{\"trimmer\":\"trimmer\"},\"en\":{\"foo\":{\"trimmer\":\"trimmer\"}},\"es\":{\"foo\":{\"trimmer\":\"recortadora\"}}});
+if(typeof(I18n) == 'undefined') { I18n = {}; };\nI18n.translations = ({\"foo\":{\"trimmer\":\"trimmer\"},\"bif\":{\"key\":\"value\"},\"en\":{\"foo\":{\"trimmer\":\"trimmer\"},\"bif\":{\"key\":\"value\"}},\"es\":{\"foo\":{\"trimmer\":\"recortadora\"},\"bif\":{\"key\":\"valor\"}}});
 RESP
   end
 

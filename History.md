@@ -20,3 +20,8 @@
 
   * Fix /trimmer/en/{translations/templates}.js routes
 
+* Version 0.0.6
+  #####Changed
+
+  * Allow further filtering of keys via :allowed_keys param
+

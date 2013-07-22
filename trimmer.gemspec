@@ -4,6 +4,7 @@ require "trimmer/version"
 
 Gem::Specification.new do |s|
   s.name        = "trimmer"
+  s.license     = "MIT"
   s.version     = Trimmer::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Pablo Villalba", "Saimon Moore"]
