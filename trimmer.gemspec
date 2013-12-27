@@ -10,8 +10,9 @@ Gem::Specification.new do |s|
   s.authors     = ["Pablo Villalba", "Saimon Moore"]
   s.email       = ["pablo@teambox.com", "saimon@teambox.com"]
   s.homepage    = "https://github.com/teambox/trimmer"
-  s.summary = %q{Rack endpoint to make templates and i18n translations available in javascript}
-
+  s.summary     = %q{Rack endpoint to make templates and i18n translations available in javascript}
+  s.license     = "MIT"
+  
   s.rubyforge_project = "trimmer"
 
   s.files         = `git ls-files`.split("\n")
